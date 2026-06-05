@@ -15,7 +15,7 @@
     <div id="vanta-canvas"></div>
     <div class="page-fade-overlay"></div>
 
-    <!-- HERO -->
+
     <section id="home" class="hero-section">
         <div class="container">
             <div class="hero-inner text-center">
@@ -56,7 +56,7 @@
                     <input type="text" id="searchInput" class="search-input" placeholder="Search by filename...">
                 </div>
                 <div class="row g-4 justify-content-center" id="projects-container">
-                    <!-- Dynamic content loaded from script.js -->
+                  
                 </div>
             </div>
         </main>
@@ -74,7 +74,7 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
+    
     <div class="container-fluid border-0" id="footer">
         <div class="container py-5 fade-in-on-scroll">
             <div class="row">
@@ -109,7 +109,7 @@
         </div>
     </div>
 
-    <!-- ART MODAL - Clean Design -->
+
     <div class="modal fade" id="artModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="art-modal">
@@ -147,7 +147,6 @@
         });
     </script>
     <script>
-        // Prevent images from being dragged or saved via context menu
         function protectImages() {
             document.querySelectorAll('img').forEach(img => {
                 img.addEventListener('dragstart', e => e.preventDefault());
@@ -155,8 +154,7 @@
             });
         }
         protectImages();
-        
-        // Re-apply protection after dynamic content loads
+
         const observer = new MutationObserver(protectImages);
         observer.observe(document.body, { childList: true, subtree: true });
     </script>
