@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     const projectsData = [
-        { id: 1,  title: "Referee Chair Exhibicionista V2",   description: "serxe-referee-chair-v2-shield.png",             category: "PNG", images: ["./assets/img/serxe (1).jpg"],  filename: "setshield serxe-referee-chair-v2-shield.png" },
+        { id: 1,  title: "Referee Chair V2",   description: "serxe-referee-chair-v2-shield.png",             category: "PNG", images: ["./assets/img/serxe (1).jpg"],  filename: "setshield serxe-referee-chair-v2-shield.png" },
         { id: 2,  title: "X-ray Machine",           description: "serxe-xray-machine-shield.png",                category: "PNG", images: ["./assets/img/serxe (2).jpg"],  filename: "setshield serxe-xray-machine-shield.png" },
         { id: 3,  title: "Graal Truck",             description: "serxe-graal-truck-shield.png",                 category: "PNG", images: ["./assets/img/serxe (3).jpg"],  filename: "setshield serxe-graal-truck-shield.png" },
         { id: 4,  title: "RPS Table V1",            description: "serxerps-shield.png",                          category: "PNG", images: ["./assets/img/serxe (4).jpg"],  filename: "setshield serxerps-shield.png" },
