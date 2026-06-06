@@ -12,9 +12,20 @@
 </head>
 <body>
 
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <img src="./assets/img/serxelogo.png" alt="Loading">
+            </div>
+            <div class="preloader-bar-container">
+                <div class="preloader-bar" id="preloader-bar"></div>
+            </div>
+            <p class="preloader-text" id="preloader-text">Loading assets... 0%</p>
+        </div>
+    </div>
+
     <div id="vanta-canvas"></div>
     <div class="page-fade-overlay"></div>
-
 
     <section id="home" class="hero-section">
         <div class="container">
@@ -37,11 +48,9 @@
                         <i class="fab fa-tiktok"></i>
                     </a>
                 </div>
-              
             </div>
         </div>
     </section>
-
 
     <section id="projects">
         <main id="gallery">
@@ -53,13 +62,24 @@
                 </div>
                 <div class="search-wrapper reveal">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search...">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search shields...">
                 </div>
                 <div class="row g-4 justify-content-center" id="projects-container">
-                  
                 </div>
             </div>
         </main>
+    </section>
+
+    <section id="supporters">
+        <div class="container">
+            <div class="section-header text-center reveal">
+                <h2 class="section-title">Featured Tools</h2>
+                <div class="header-line-separator"></div>
+                <p class="secondary-text">Essential tools and resources for Graal players </p>
+            </div>
+            <div class="row g-4 justify-content-center" id="supporters-container">
+            </div>
+        </div>
     </section>
 
     <section id="thank-you" class="py-5 border-0">
@@ -67,14 +87,12 @@
             <div class="thank-you-content reveal">
                 <h2 class="section-title mb-4">THANKS FOR VISITING!</h2>
                 <p class="secondary-text lead mb-5 mx-auto" style="max-width:700px;">
-                    I hope you all enjoyed the shields i created. Stay tuned for more art updates and new releases.
+                    I hope you all enjoyed the shields I created. Stay tuned for more art updates and new releases.
                 </p>
-                
             </div>
         </div>
     </section>
 
-    
     <div class="container-fluid border-0" id="footer">
         <div class="container py-5 fade-in-on-scroll">
             <div class="row">
@@ -86,7 +104,6 @@
                 </div>
                 <div class="col-md-4 mt-3 text-center d-flex flex-column align-items-center justify-content-center">
                     <img src="./assets/img/serxelogo.png" width="65" alt="Serxe Logo" class="footer-logo-img" />
-                    
                 </div>
                 <div class="col-md-4 mt-3">
                     <h4 class="footer-heading">Contact Me</h4>
@@ -98,7 +115,6 @@
                         <i class="fab fa-discord footer-contact-icon"></i>
                         <span class="footer-text text-light">serxeondisc</span>
                     </div>
-                   
                 </div>
             </div>
         </div>
@@ -109,20 +125,28 @@
         </div>
     </div>
 
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-ring"></div>
 
     <div class="modal fade" id="artModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="art-modal">
                 <div class="art-modal-img-container">
-                    <button type="button" class="art-modal-close" data-bs-dismiss="modal">
+                    <button type="button" class="art-modal-close" data-bs-dismiss="modal" aria-label="Close">
                         <i class="fas fa-times"></i>
                     </button>
-                    <img id="modalImg" src="" alt="Art Preview" class="art-modal-img">
+                    <div class="art-modal-img-loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <img id="modalImg" src="" alt="Shield Preview" class="art-modal-img">
                 </div>
                 <div class="art-modal-content">
-                    <h5 id="modalTitle" class="art-modal-title">Art Title</h5>
-                    <p id="modalDesc" class="art-modal-desc">Description</p>
-                 
+                    <h5 id="modalTitle" class="art-modal-title">Shield Title</h5>
+                    <div id="modalFilenameWrap" class="art-modal-filename-wrap" style="cursor: pointer;" title="Click to copy" onclick="event.stopPropagation(); copyModalFilename();">
+                        <i class="fas fa-file-code art-modal-file-icon"></i>
+                        <code id="modalFilename" class="art-modal-filename">filename</code>
+                        <i class="fas fa-copy art-modal-copy-icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,6 +157,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script>
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            const bar = document.getElementById('preloader-bar');
+            const text = document.getElementById('preloader-text');
+            
+            const assets = [
+                './assets/img/serxelogo.png',
+                './assets/img/serxe_header_text.gif',
+                './assets/img/serxeshield.jpg'
+            ];
+            
+            for (let i = 1; i <= 23; i++) {
+                assets.push(`./assets/img/serxe (${i}).jpg`);
+            }
+            
+            let loaded = 0;
+            const total = assets.length;
+            
+            function updateProgress() {
+                const percent = Math.round((loaded / total) * 100);
+                bar.style.width = percent + '%';
+                text.textContent = `Loading assets... ${percent}%`;
+                
+                if (loaded >= total) {
+                    setTimeout(() => {
+                        preloader.classList.add('hidden');
+                        setTimeout(() => preloader.remove(), 500);
+                    }, 300);
+                }
+            }
+            
+            assets.forEach(src => {
+                const img = new Image();
+                img.onload = function() {
+                    loaded++;
+                    updateProgress();
+                };
+                img.onerror = function() {
+                    loaded++;
+                    updateProgress();
+                };
+                img.src = src;
+            });
+            
+            setTimeout(() => {
+                if (!preloader.classList.contains('hidden')) {
+                    preloader.classList.add('hidden');
+                    setTimeout(() => preloader.remove(), 500);
+                }
+            }, 10000);
+        });
+        
         VANTA.NET({
             el: "#vanta-canvas",
             mouseControls: true,
@@ -145,6 +221,12 @@
             color: 0x81eb38,
             backgroundColor: 0x141414,
         });
+        
+        window.copyModalFilename = function() {
+            const filename = document.getElementById('modalFilename').textContent;
+            navigator.clipboard.writeText(filename)
+                .catch(err => console.error(err));
+        };
     </script>
     <script>
         function protectImages() {
@@ -154,9 +236,78 @@
             });
         }
         protectImages();
-
         const observer = new MutationObserver(protectImages);
         observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') e.preventDefault();
+            if (e.metaKey && e.altKey && e.key === 'I') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'J') e.preventDefault();
+            if (e.metaKey && e.altKey && e.key === 'J') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') e.preventDefault();
+            if (e.ctrlKey && e.key === 'u') e.preventDefault();
+            if (e.metaKey && e.key === 'u') e.preventDefault();
+        });
+        
+        (function() {
+            const devtools = () => { console.log('DevTools detected'); };
+            setInterval(devtools, 1000);
+        })();
+        
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorRing = document.querySelector('.custom-cursor-ring');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        const clickables = document.querySelectorAll('a, button, .art-card, .tool-card, input, [role="button"]');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorRing.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorRing.classList.remove('hover');
+            });
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicking');
+            cursorRing.classList.add('clicking');
+        });
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicking');
+            cursorRing.classList.remove('clicking');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+            cursorRing.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+            cursorRing.style.opacity = '1';
+        });
     </script>
 </body>
 </html>
