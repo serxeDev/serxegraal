@@ -1,1950 +1,313 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Serxe Graal</title>
+    <link rel="icon" type="image/png" href="./assets/img/serxelogo.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-    <title>EggDex</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <link
-      rel="icon"
-      type="image/png"
-      href="./assets/img/serxe_easter_icon.png"
-    />
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="./assets/style.css" />
-  </head>
-
-  <body>
-    <!-- Loading Overlay -->
-    <div
-      id="loadingOverlay"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          135deg,
-          #ffb7ce 0%,
-          #b2e2f2 50%,
-          #ffcf96 100%
-        );
-        z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.5s ease;
-      "
-    >
-      <div style="text-align: center">
-        <img
-          src="./assets/img/serxe_easter_icon.png"
-          alt="Loading"
-          style="
-            width: 100px;
-            height: auto;
-            animation: bounce 1s infinite;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
-          "
-        />
-        <h2
-          style="
-            margin: 0 0 15px 0;
-            color: white;
-            font-family: &quot;Fredoka&quot;, sans-serif;
-            font-size: 2.5rem;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-          "
-        >
-          EggDex
-        </h2>
-        <p
-          style="
-            margin: 0 0 25px 0;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1rem;
-            font-weight: 500;
-          "
-        >
-          Loading assets...
-        </p>
-        <div
-          style="
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 20px;
-            height: 16px;
-            overflow: hidden;
-            width: 280px;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-          "
-        >
-          <div
-            id="loadingProgressBar"
-            style="
-              background: white;
-              height: 100%;
-              width: 0%;
-              border-radius: 20px;
-              transition: width 0.3s ease;
-              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            "
-          ></div>
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <img src="./assets/img/serxelogo.png" alt="Loading">
+            </div>
+            <div class="preloader-bar-container">
+                <div class="preloader-bar" id="preloader-bar"></div>
+            </div>
+            <p class="preloader-text" id="preloader-text">Loading assets... 0%</p>
         </div>
-        <span
-          id="loadingPercent"
-          style="
-            font-size: 1rem;
-            color: white;
-            font-weight: 700;
-            margin-top: 15px;
-            display: inline-block;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-          "
-          >0%</span
-        >
-      </div>
-      <style>
-        @keyframes bounce {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-        }
-      </style>
     </div>
 
-    <header>
-      <div class="profile-card">
-        <div class="header-actions">
-          <i
-            class="fas fa-question-circle header-icon"
-            title="Info"
-            onclick="openAssistant()"
-          ></i>
+    <div id="vanta-canvas"></div>
+    <div class="page-fade-overlay"></div>
 
-          <i
-            class="fas fa-moon header-icon"
-            id="themeToggle"
-            title="Theme"
-            onclick="toggleDarkMode()"
-          ></i>
-
-          <i
-            class="fas fa-history header-icon"
-            title="Trade Logs"
-            onclick="openTradeLogs()"
-          ></i>
-
-          <i
-            class="fas fa-cog header-icon"
-            onclick="openSettings()"
-            title="Settings"
-          ></i>
-        </div>
-
-        <div id="displayPic" class="profile-pic">
-          <img src="./assets/img/user_profile.png" alt="Profile" />
-        </div>
-
-        <div class="profile-right" style="flex-grow: 1">
-          <h2 id="displayUser" style="margin: 0; font-size: 1rem">
-            Loading...
-          </h2>
-
-          <div class="stats-row">
-            <div class="progress-wrapper">
-              <div class="progress-container"><div id="progressBar"></div></div>
-
-              <span id="progressPercent">0%</span>
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="hero-inner text-center">
+                <div class="hero-logo-wrap reveal">
+                    <img src="./assets/img/serxelogo.png" class="hero-logo" alt="Serxe Logo" />
+                </div>
+                <img src="./assets/img/serxe_header_text.gif" class="hero-title-img reveal" alt="SERXE" />
+                <p class="hero-subtitle reveal">
+                    <span>Graal Classic Shields Archive</span>
+                </p>
+                <div class="hero-socials reveal">
+                    <a href="https://discord.com/users/serxeondisc" class="social-icon" title="Discord" target="_blank">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="mailto:serxegraal@gmail.com" class="social-icon" title="Email" target="_blank">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@serxeontiktok" class="social-icon" title="TikTok" target="_blank">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="total-counter">
-              Total: <span id="totalEggsCount">0</span>
+    <section id="projects">
+        <main id="gallery">
+            <div class="container">
+                <div class="section-header text-center reveal">
+                    <h2 class="section-title">Shields</h2>
+                    <div class="header-line-separator"></div>
+                    <p class="secondary-text">A curated showcase of my latest digital artwork and designs.</p>
+                </div>
+                <div class="search-wrapper reveal">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search shields...">
+                </div>
+                <div class="row g-4 justify-content-center" id="projects-container">
+                </div>
             </div>
-          </div>
+        </main>
+    </section>
+
+    <section id="supporters">
+        <div class="container">
+            <div class="section-header text-center reveal">
+                <h2 class="section-title">Featured Tools</h2>
+                <div class="header-line-separator"></div>
+                <p class="secondary-text">Essential tools and resources for Graal players </p>
+            </div>
+            <div class="row g-4 justify-content-center" id="supporters-container">
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div id="dexControlsWrapper">
-        <div id="dexControls" style="overflow: hidden; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; max-height: 200px; opacity: 1;">
-          <div class="btn-group">
-            <button class="filter-btn active" onclick="setFilter('all', this)">
-              All
-            </button>
-
-            <button class="filter-btn" onclick="setFilter('collected', this)">
-              Owned
-            </button>
-
-            <button class="filter-btn" onclick="setFilter('missing', this)">
-              Missing
-            </button>
-
-            <button class="filter-btn" onclick="setFilter('duplicates', this)">
-              Extras
-            </button>
-          </div>
-
-          <div class="btn-group">
-            <button class="action-btn copy-btn" onclick="copyTradeText()">
-              <i class="fas fa-copy"></i> Copy List
-            </button>
-
-            <button class="action-btn snap-btn" onclick="openTradeModal()">
-              <i class="fas fa-exchange-alt"></i> Trade Egg
-            </button>
-          </div>
-          <div style="margin-top: 10px; text-align: center">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Search egg #..."
-              oninput="handleSearch(this.value)"
-              style="
-                padding: 8px 12px;
-                border-radius: 12px;
-                border: 1px solid #ccc;
-                outline: none;
-                font-family: 'Fredoka', sans-serif;
-              "
-            />
-          </div>
+    <section id="thank-you" class="py-5 border-0">
+        <div class="container text-center pt-5">
+            <div class="thank-you-content reveal">
+                <h2 class="section-title mb-4">THANKS FOR VISITING!</h2>
+                <p class="secondary-text lead mb-5 mx-auto" style="max-width:700px;">
+                    I hope you all enjoyed the shields I created. Stay tuned for more art updates and new releases.
+                </p>
+            </div>
         </div>
-        <div style="text-align: center; padding: 10px 0; cursor: pointer;" onclick="toggleDexControls()">
-          <i id="dexToggleArrow" class="fas fa-chevron-down" style="color: var(--text); opacity: 0.6; transition: transform 0.3s ease; font-size: 0.9rem;"></i>
+    </section>
+
+    <div class="container-fluid border-0" id="footer">
+        <div class="container py-5 fade-in-on-scroll">
+            <div class="row">
+                <div class="col-md-4 mt-3">
+                    <h4 class="footer-heading">About</h4>
+                    <p class="footer-text">
+                        This is an archive of my shield designs and in-game art for <span>Graal Online Classic</span>. Feel free to use them!
+                    </p>
+                </div>
+                <div class="col-md-4 mt-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <img src="./assets/img/serxelogo.png" width="65" alt="Serxe Logo" class="footer-logo-img" />
+                </div>
+                <div class="col-md-4 mt-3">
+                    <h4 class="footer-heading">Contact Me</h4>
+                    <div class="footer-contact-row">
+                        <i class="fas fa-envelope footer-contact-icon"></i>
+                        <span class="footer-text text-light">serxegraal@gmail.com</span>
+                    </div>
+                    <div class="footer-contact-row">
+                        <i class="fab fa-discord footer-contact-icon"></i>
+                        <span class="footer-text text-light">serxeondisc</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div
-        id="locControls"
-        style="
-          display: none;
-
-          text-align: center;
-
-          font-weight: bold;
-
-          color: var(--primary);
-        "
-      >
-        <i class="fas fa-map-marker-alt"></i> Egg Locations
-      </div>
-    </header>
-
-    <div id="captureZone" class="page visible">
-      <div class="grid" id="eggGrid"></div>
+        <div class="footer-bottom">
+            <div class="container text-center">
+                <small>&copy; 2026 <span>Serxe Graal</span>. All rights reserved.</small>
+            </div>
+        </div>
     </div>
 
-    <div id="locationZone" class="page hidden" style="display: none"></div>
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-ring"></div>
 
-    <button class="assistant-btn" onclick="toggleViewMode()">
-      <img
-        id="viewIcon"
-        src="./assets/img/location_icon.png"
-        alt="Toggle View"
-      />
-    </button>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-EB070YKWV1"
-    ></script>
+    <div class="modal fade" id="artModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="art-modal">
+                <div class="art-modal-img-container">
+                    <button type="button" class="art-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="art-modal-img-loader">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <img id="modalImg" src="" alt="Shield Preview" class="art-modal-img">
+                </div>
+                <div class="art-modal-content">
+                    <h5 id="modalTitle" class="art-modal-title">Shield Title</h5>
+                    <div id="modalFilenameWrap" class="art-modal-filename-wrap" style="cursor: pointer;" title="Click to copy" onclick="event.stopPropagation(); copyModalFilename();">
+                        <i class="fas fa-file-code art-modal-file-icon"></i>
+                        <code id="modalFilename" class="art-modal-filename">filename</code>
+                        <i class="fas fa-copy art-modal-copy-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-EB070YKWV1");
-    </script>
-    <script>
-      const totalUniqueEggs = 100;
-      let searchQuery = "";
-      let currentFilter = "all";
-
-      let viewMode = "dex";
-
-      let eggData = JSON.parse(localStorage.getItem("eggInventory")) || {};
-
-      let userData = JSON.parse(localStorage.getItem("eggUserData")) || {
-        name: "",
-      };
-
-      let isDarkMode = localStorage.getItem("darkMode") === "true";
-
-      const areaData = [
-        {
-          name: "Graal/Easter Grove Spawn",
-
-          desc: "Common eggs that appear naturally on the ground in these areas.",
-
-          eggs: [
-            1, 2, 3, 4, 5, 31, 32, 33, 34, 35, 51, 52, 53, 54, 55, 81, 82, 83,
-            84, 85,
-          ],
-
-          img: "./assets/img/spawn.jpg",
-        },
-
-        {
-          name: "Looting & Vases",
-
-          desc: "Found by breaking pots or loots.",
-
-          eggs: [
-            16, 17, 18, 19, 20, 36, 37, 38, 39, 40, 66, 67, 68, 69, 70, 86, 87,
-            88, 89, 90,
-          ],
-
-          img: "./assets/img/pots.jpg",
-        },
-
-        {
-          name: "Easter Grove/Graal Bush & Grass",
-
-          desc: "Found by cutting grass and bushes in the main fields and Easter Grove.",
-
-          eggs: [6, 8, 9, 10, 26, 27, 28, 56, 58, 59, 60, 76, 77, 78],
-
-          img: "./assets/img/bush.jpg",
-        },
-
-        {
-          name: "Destiny Bushes & Grass",
-
-          desc: "Specific grass/bush drops found within the Destiny area.",
-
-          eggs: [7, 29, 57, 79],
-
-          img: "./assets/img/bush.jpg",
-        },
-
-        {
-          name: "Big City Bushes & Grass",
-
-          desc: "Eggs found specifically by clearing bush in Big City.",
-
-          eggs: [30, 80],
-
-          img: "./assets/img/bigcitybush.jpg",
-        },
-
-        {
-          name: "Big City Digging",
-
-          desc: "Use your shovel to find these buried eggs in the Big City area.",
-
-          eggs: [21, 46, 71, 96],
-
-          img: "./assets/img/bigcity.jpg",
-        },
-
-        {
-          name: "Railway Digging",
-
-          desc: "Buried eggs found specifically along the Railway tracks or in Rail Road Caves.",
-
-          eggs: [22, 47, 72, 97],
-
-          img: "./assets/img/railwaydig.jpg",
-        },
-
-        {
-          name: "Destiny Digging",
-
-          desc: "Buried eggs located within the Destiny region.",
-
-          eggs: [23, 48, 73, 98],
-
-          img: "./assets/img/destinydig.jpg",
-        },
-
-        {
-          name: "Easter Grove Digging",
-
-          desc: "Buried eggs found by digging in the Easter Grove area.",
-
-          eggs: [24, 49, 74, 99],
-
-          img: "./assets/img/eastergrovedig.jpg",
-        },
-
-        {
-          name: "General Graal Dig Spots",
-
-          desc: "Miscellaneous dig spots found across the map (75, 100, 50, 25).",
-
-          eggs: [25, 50, 75, 100],
-
-          img: "./assets/img/dig.jpg",
-        },
-
-        {
-          name: "Rats, Bats, & Blobs",
-
-          desc: "Dropped by defeating Rats, Bats, and standard Blobs.",
-
-          eggs: [14, 44, 64, 94],
-
-          img: "./assets/img/blob.jpg",
-        },
-
-        {
-          name: "Bandit, Rebel, Pyrats, & Snakes",
-
-          desc: "Combat drops from Bandits, Rebel, Pyrats, and Snakes.",
-
-          eggs: [12, 42, 62, 92],
-
-          img: "./assets/img/bandit.jpg",
-        },
-
-        {
-          name: "Spiders",
-
-          desc: "Dropped by defeating Spiders in forests.",
-
-          eggs: [11, 43, 61, 93],
-
-          img: "./assets/img/spider.jpg",
-        },
-
-        {
-          name: "Lizardons",
-
-          desc: "Dropped by defeating Lizardons.",
-
-          eggs: [15, 45, 65, 95],
-
-          img: "./assets/img/lizardon.jpg",
-        },
-
-        {
-          name: "Crabs & Archers",
-
-          desc: "Combat drops from Crabs and Archers.",
-
-          eggs: [13, 41, 63, 91],
-
-          img: "./assets/img/archer.jpg",
-        },
-      ];
-
-      if (isDarkMode) document.body.classList.add("dark-mode");
-
-      for (let i = 1; i <= totalUniqueEggs; i++)
-        if (eggData[i] === undefined) eggData[i] = 0;
-
-      function toggleDarkMode() {
-        isDarkMode = !isDarkMode;
-
-        document.body.classList.toggle("dark-mode");
-
-        localStorage.setItem("darkMode", isDarkMode);
-
-        document.getElementById("themeToggle").className = isDarkMode
-          ? "fas fa-sun header-icon"
-          : "fas fa-moon header-icon";
-      }
-      function handleSearch(value) {
-        searchQuery = value.trim().replace("#", "");
-        render();
-      }
-
-      let isDexControlsOpen = true;
-
-      function toggleDexControls() {
-        const controls = document.getElementById('dexControls');
-        const arrow = document.getElementById('dexToggleArrow');
-        
-        if (isDexControlsOpen) {
-          controls.style.maxHeight = '0';
-          controls.style.opacity = '0';
-          arrow.style.transform = 'rotate(180deg)';
-        } else {
-          controls.style.maxHeight = '200px';
-          controls.style.opacity = '1';
-          arrow.style.transform = 'rotate(0deg)';
-        }
-        
-        isDexControlsOpen = !isDexControlsOpen;
-      }
-      function toggleViewMode() {
-        const dex = document.getElementById("captureZone");
-
-        const loc = document.getElementById("locationZone");
-
-        const dexControls = document.getElementById("dexControls");
-
-        const locControls = document.getElementById("locControls");
-
-        viewMode = viewMode === "dex" ? "loc" : "dex";
-
-        if (viewMode === "loc") {
-          dex.classList.add("hidden");
-
-          dex.classList.remove("visible");
-
-          dexControls.style.display = "none";
-
-          loc.style.display = "block";
-
-          render();
-
-          setTimeout(() => {
-            loc.classList.remove("hidden");
-
-            loc.classList.add("visible");
-
-            locControls.style.display = "block";
-          }, 50);
-        } else {
-          loc.classList.add("hidden");
-
-          loc.classList.remove("visible");
-
-          locControls.style.display = "none";
-
-          dex.style.display = "block";
-
-          render();
-
-          setTimeout(() => {
-            dex.classList.remove("hidden");
-
-            dex.classList.add("visible");
-
-            dexControls.style.display = "block";
-          }, 50);
-        }
-
-        document.getElementById("viewIcon").src =
-          viewMode === "dex"
-            ? "./assets/img/location_icon.png"
-            : "./assets/img/egg_icon.png";
-      }
-
-      function createEggCard(i) {
-        const count = eggData[i];
-
-        const hue = (i * 137.5) % 360;
-
-        const card = document.createElement("div");
-
-        card.className = `egg-card ${count > 0 ? "has-any" : "is-missing"}`;
-
-        card.onclick = (e) => {
-          if (!e.target.closest(".qty-btn")) {
-            showEggDetails(i);
-          }
-        };
-
-        card.innerHTML = `
-
-
-
-          <span style="font-size:0.7rem; font-weight:700;">#${i}</span>
-
-
-
-          <div class="egg-icon" style="--hue: ${hue}deg">🥚</div>
-
-
-
-          <div class="qty-controls">
-
-
-
-            <button class="qty-btn" onclick="update(${i}, -1)">-</button>
-
-
-
-            <span style="font-weight:800">${count}</span>
-
-
-
-            <button class="qty-btn" onclick="update(${i}, 1)">+</button>
-
-
-
-          </div>`;
-
-        return card;
-      }
-
-      function renderDex() {
-        const grid = document.getElementById("eggGrid");
-        grid.innerHTML = "";
-
-        for (let i = 1; i <= totalUniqueEggs; i++) {
-          const count = eggData[i];
-
-          // FILTER LOGIC
-          if (currentFilter === "collected" && count === 0) continue;
-          if (currentFilter === "missing" && count > 0) continue;
-          if (currentFilter === "duplicates" && count < 2) continue;
-
-          // SEARCH LOGIC
-          if (searchQuery && !i.toString().includes(searchQuery)) continue;
-
-          grid.appendChild(createEggCard(i));
-        }
-      }
-
-      function renderLocations() {
-        const zone = document.getElementById("locationZone");
-
-        zone.innerHTML = "";
-
-        areaData.forEach((area) => {
-          const totalInCat = area.eggs.length;
-
-          const ownedInCat = area.eggs.filter((id) => eggData[id] > 0).length;
-
-          const missingInCat = totalInCat - ownedInCat;
-
-          const block = document.createElement("div");
-
-          block.className = "location-block";
-
-          block.innerHTML = `
-
-
-
-      <div class="location-header">
-
-
-
-        <img src="${area.img}" class="location-img" alt="${area.name}">
-
-
-
-        <div class="location-text">
-
-
-
-          <h3>${area.name}</h3>
-
-
-
-          <p>${area.desc}</p>
-
-
-
-          <div class="category-stats">
-
-
-
-            <span class="badge badge-total">Total: ${totalInCat}</span>
-
-
-
-            <span class="badge badge-owned">Owned: ${ownedInCat}</span>
-
-
-
-            <span class="badge badge-missing">Missing: ${missingInCat}</span>
-
-
-
-          </div>
-
-
-
-        </div>
-
-
-
-      </div>`;
-
-          const slider = document.createElement("div");
-
-          slider.className = "egg-slider";
-
-          slider.onwheel = (e) => {
-            if (e.deltaY !== 0) {
-              e.preventDefault();
-
-              slider.scrollLeft += e.deltaY;
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            const bar = document.getElementById('preloader-bar');
+            const text = document.getElementById('preloader-text');
+            
+            const assets = [
+                './assets/img/serxelogo.png',
+                './assets/img/serxe_header_text.gif',
+                './assets/img/serxeshield.jpg'
+            ];
+            
+            for (let i = 1; i <= 23; i++) {
+                assets.push(`./assets/img/serxe (${i}).jpg`);
             }
-          };
-
-          area.eggs.forEach((eggId) => {
-            slider.appendChild(createEggCard(eggId));
-          });
-
-          block.appendChild(slider);
-
-          zone.appendChild(block);
-        });
-
-        const disclaimer = document.createElement("div");
-
-        disclaimer.className = "disclaimer-card";
-
-        disclaimer.innerHTML = `
-
-
-
-    <div style="margin-bottom: 8px;">
-
-
-
-      <i class="fas fa-exclamation-triangle"></i> 
-
-
-
-      Note: These egg locations are based on the 2026 Hunt. 
-
-
-
-    </div>
-
-
-
-
-
-    <br>
-
-
-
-    <span style="font-size: 0.8rem; opacity: 0.9;">Pm me if this is not accurate! - <strong>Serxe</strong></span>
-
-
-
-  `;
-
-        zone.appendChild(disclaimer);
-      }
-
-      function render() {
-        if (viewMode === "dex") renderDex();
-        else renderLocations();
-
-        updateStats();
-
-        localStorage.setItem("eggInventory", JSON.stringify(eggData));
-      }
-
-      // 1. Updated update function
-      function update(id, change) {
-        eggData[id] = Math.max(0, eggData[id] + change);
-
-        // Save data immediately
-        localStorage.setItem("eggInventory", JSON.stringify(eggData));
-        updateStats();
-
-        if (viewMode === "dex") {
-          // In Dex mode, we usually need a full render because of filters (Owned/Missing)
-          render();
-        } else {
-          // In Location mode, we only update the specific elements to keep scroll position
-          updateSpecificLocationUI(id);
-        }
-      }
-
-      // 2. New helper to update numbers without refreshing the whole page
-      function updateSpecificLocationUI(eggId) {
-        // Update the count on all instances of this egg card visually
-        const cards = document.querySelectorAll(`.egg-card`); // Find all cards
-        // We identify the right card by checking the text content of the # ID
-        cards.forEach((card) => {
-          if (card.querySelector("span").innerText === `#${eggId}`) {
-            const count = eggData[eggId];
-            card.className = `egg-card ${count > 0 ? "has-any" : "is-missing"}`;
-            card.querySelector(".qty-controls span").innerText = count;
-          }
-        });
-
-        // Update the category badges (Total/Owned/Missing)
-        areaData.forEach((area, index) => {
-          if (area.eggs.includes(eggId)) {
-            const ownedInCat = area.eggs.filter((id) => eggData[id] > 0).length;
-            const totalInCat = area.eggs.length;
-            const missingInCat = totalInCat - ownedInCat;
-
-            // Find the specific block for this area
-            const blocks = document.querySelectorAll(".location-block");
-            const block = blocks[index];
-            if (block) {
-              block.querySelector(".badge-owned").innerText =
-                `Owned: ${ownedInCat}`;
-              block.querySelector(".badge-missing").innerText =
-                `Missing: ${missingInCat}`;
-            }
-          }
-        });
-      }
-
-      let hasCelebrated = false;
-
-      function updateStats() {
-        const uniqueCollected = Object.values(eggData).filter(
-          (count) => count > 0,
-        ).length;
-
-        const totalSum = Object.values(eggData).reduce((a, b) => a + b, 0);
-
-        const percent = Math.round((uniqueCollected / totalUniqueEggs) * 100);
-
-        document.getElementById("progressBar").style.width = percent + "%";
-
-        document.getElementById("progressPercent").innerText = percent + "%";
-
-        document.getElementById("totalEggsCount").innerText = totalSum;
-
-        if (percent === 100 && !hasCelebrated) {
-          fireCelebration();
-
-          hasCelebrated = true;
-        } else if (percent < 100) {
-          hasCelebrated = false;
-        }
-      }
-
-      function fireCelebration() {
-        const duration = 3 * 1000;
-
-        const end = Date.now() + duration;
-
-        (function frame() {
-          confetti({
-            particleCount: 3,
-
-            angle: 60,
-
-            spread: 55,
-
-            origin: { x: 0, y: 0.6 },
-
-            colors: ["#ffb7ce", "#b2e2f2", "#ffcf96"],
-          });
-
-          confetti({
-            particleCount: 3,
-
-            angle: 120,
-
-            spread: 55,
-
-            origin: { x: 1, y: 0.6 },
-
-            colors: ["#ffb7ce", "#b2e2f2", "#ffcf96"],
-          });
-
-          if (Date.now() < end) {
-            requestAnimationFrame(frame);
-          }
-        })();
-
-        Swal.fire({
-          title: "Egg Master!",
-
-          text: "Congratulations! You have collected all 100 eggs!",
-
-          icon: "success",
-
-          confirmButtonColor: "#ffb7ce",
-        });
-      }
-
-      function setFilter(f, btn) {
-        currentFilter = f;
-
-        document
-
-          .querySelectorAll(".filter-btn")
-
-          .forEach((b) => b.classList.remove("active"));
-
-        btn.classList.add("active");
-
-        render();
-      }
-
-      async function checkFirstTime() {
-        if (!userData.name) {
-          const { value: name } = await Swal.fire({
-            title: "Welcome!",
-
-            input: "text",
-
-            inputPlaceholder: "Enter name",
-
-            confirmButtonColor: "#ffb7ce",
-
-            allowOutsideClick: false,
-          });
-
-          if (name) {
-            userData = { name: name };
-
-            localStorage.setItem("eggUserData", JSON.stringify(userData));
-
-            updateProfileUI();
-          }
-        } else {
-          updateProfileUI();
-        }
-      }
-
-      function copyTradeText() {
-        let missing = [],
-          extras = [],
-          owned = [];
-
-        for (let i = 1; i <= totalUniqueEggs; i++) {
-          if (eggData[i] === 0) missing.push(i);
-          else {
-            owned.push(i);
-
-            if (eggData[i] > 1) extras.push(i);
-          }
-        }
-
-        const formatRange = (nums) => {
-          if (nums.length === 0) return "";
-
-          nums.sort((a, b) => a - b);
-
-          let result = [],
-            start = nums[0],
-            end = nums[0];
-
-          for (let i = 1; i <= nums.length; i++) {
-            if (i < nums.length && nums[i] === end + 1) end = nums[i];
-            else {
-              result.push(start === end ? start : `${start}-${end}`);
-
-              if (i < nums.length) start = end = nums[i];
-            }
-          }
-
-          return result.join(",");
-        };
-
-        let textToCopy = "";
-
-        let emptyTitle = "Empty List",
-          emptyMsg = "No eggs found for this category.",
-          emptyIcon = "info";
-
-        if (currentFilter === "all") {
-          let parts = [];
-
-          if (extras.length > 0) parts.push(`Extra:#${formatRange(extras)}`);
-
-          if (missing.length > 0) parts.push(`Need:#${formatRange(missing)}`);
-
-          textToCopy = parts.join(" ");
-
-          if (!textToCopy && owned.length === totalUniqueEggs) {
-            emptyTitle = "Congratulations!";
-
-            emptyMsg = "Your EggDex is 100% complete! Great job!";
-
-            emptyIcon = "success";
-          }
-        } else if (currentFilter === "collected") {
-          textToCopy = owned.length > 0 ? `Have:#${formatRange(owned)}` : "";
-
-          if (!textToCopy) emptyMsg = "Your collection is empty. Time to hunt!";
-        } else if (currentFilter === "missing") {
-          textToCopy =
-            missing.length > 0 ? `Need:#${formatRange(missing)}` : "";
-
-          if (!textToCopy && owned.length === totalUniqueEggs) {
-            emptyTitle = "Hunt Complete!";
-
-            emptyMsg = "You aren't missing any eggs!";
-
-            emptyIcon = "success";
-          }
-        } else if (currentFilter === "duplicates") {
-          textToCopy = extras.length > 0 ? `Extra:#${formatRange(extras)}` : "";
-
-          if (!textToCopy) emptyMsg = "No extra eggs to trade right now.";
-        }
-
-        if (!textToCopy) {
-          Swal.fire({
-            title: emptyTitle,
-
-            text: emptyMsg,
-
-            icon: emptyIcon,
-
-            background: isDarkMode ? "#2d3436" : "#ffffff",
-
-            color: isDarkMode ? "#dfe6e9" : "#2d3436",
-
-            confirmButtonColor: "#ffb7ce",
-          });
-
-          return;
-        }
-
-        const charCount = textToCopy.length;
-
-        const bgColor = isDarkMode ? "var(--card)" : "#ffffff";
-
-        const textColor = isDarkMode ? "var(--text)" : "#2d3436";
-
-        const boxColor = isDarkMode ? "rgba(255,255,255,0.05)" : "#f8f9fa";
-
-        // Badge Logic Colors - theme aware
-        const okColor = "#55efc4";
-        const okBg = isDarkMode
-          ? "rgba(85, 239, 196, 0.2)"
-          : "rgba(85, 239, 196, 0.1)";
-        const errorColor = "#ff7675";
-        const errorBg = isDarkMode
-          ? "rgba(255, 118, 117, 0.2)"
-          : "rgba(255, 118, 117, 0.1)";
-
-        const publicOk = charCount <= 99;
-
-        const privateOk = charCount <= 255;
-
-        Swal.fire({
-          title: "Copy Trade List",
-
-          background: bgColor,
-
-          color: textColor,
-
-          showCancelButton: true,
-
-          confirmButtonText: "Copy to Clipboard",
-
-          confirmButtonColor: "#ffb7ce",
-
-          cancelButtonText: "Close",
-
-          html: `
-
-      <div style="text-align: left; font-family: 'Fredoka', sans-serif;">
-
-        
-
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-
-          <div style="flex: 1; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid ${publicOk ? okColor : errorColor}; background: ${publicOk ? okBg : errorBg};">
-
-            <div style="font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; color: ${publicOk ? okColor : errorColor};">Public Chat</div>
-
-            <div style="font-weight: 700; font-size: 1rem; color: ${publicOk ? okColor : errorColor};">${publicOk ? "✓ OK" : "✗ TOO LONG"}</div>
-
-          </div>
-
-          
-
-          <div style="flex: 1; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid ${privateOk ? okColor : errorColor}; background: ${privateOk ? okBg : errorBg};">
-
-            <div style="font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; color: ${privateOk ? okColor : errorColor};">Private / PM</div>
-
-            <div style="font-weight: 700; font-size: 1rem; color: ${privateOk ? okColor : errorColor};">${privateOk ? "✓ OK" : "✗ TOO LONG"}</div>
-
-          </div>
-
-        </div>
-
-
-
-        <div style="background: ${boxColor}; padding: 15px; border-radius: 15px; margin-bottom: 15px;">
-
-           <div style="font-size: 0.9rem; word-break: break-all; line-height: 1.4; color: ${textColor};">${textToCopy}</div>
-
-        </div>
-
-
-
-        <div style="text-align: center; font-size: 0.85rem; opacity: 0.8;">
-
-           Total: <strong>${charCount}</strong> characters
-
-        </div>
-
-      </div>
-
-    `,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigator.clipboard.writeText(textToCopy);
-
-            Swal.fire({
-              title: "Copied!",
-
-              toast: true,
-
-              position: "top-end",
-
-              timer: 2000,
-
-              showConfirmButton: false,
-
-              icon: "success",
-            });
-          }
-        });
-      }
-
-      function updateProfileUI() {
-        document.getElementById("displayUser").innerText = userData.name;
-
-        const apiAvatar = `https://ui-avatars.com/api/?background=ffb7ce&color=fff&bold=true&name=${encodeURIComponent(userData.name)}`;
-
-        document.getElementById("displayPic").innerHTML =
-          `<img src="${userData.photo || "./assets/img/user_profile.png"}" onerror="this.src='${apiAvatar}'">`;
-      }
-
-      function takeScreenshot() {
-        const element = document.getElementById("captureZone");
-
-        Swal.fire({
-          title: "Snapping Photo...",
-
-          allowOutsideClick: false,
-
-          didOpen: () => Swal.showLoading(),
-        });
-
-        html2canvas(element, {
-          backgroundColor: getComputedStyle(document.body).backgroundColor,
-
-          scale: 2,
-
-          useCORS: true,
-        }).then((canvas) => {
-          const link = document.createElement("a");
-
-          link.download = `EggDex_${userData.name}.png`;
-
-          link.href = canvas.toDataURL();
-
-          link.click();
-
-          Swal.fire("Saved!", "Screenshot downloaded.", "success");
-        });
-      }
-
-      function validateEggNumber(num, field) {
-        if (num < 1 || num > 100 || !Number.isInteger(num)) {
-          return {
-            valid: false,
-            message: `Egg #${num} is invalid. Enter a number between 1-100.`,
-          };
-        }
-        if (field === "extra") {
-          if (eggData[num] <= 1) {
-            return {
-              valid: false,
-              message: `Egg #${num} - You don't have extras (you have ${eggData[num]}).`,
-            };
-          }
-        } else if (field === "need") {
-          if (eggData[num] > 0) {
-            return {
-              valid: false,
-              message: `Egg #${num} - You already have this egg (${eggData[num]} owned).`,
-            };
-          }
-        }
-        return { valid: true };
-      }
-
-      function openTradeModal() {
-        const bgColor = isDarkMode ? "var(--card)" : "#ffffff";
-        const textColor = isDarkMode ? "var(--text)" : "#2d3436";
-        const inputBg = isDarkMode ? "rgba(255,255,255,0.1)" : "#f8f9fa";
-        const inputBorder = isDarkMode ? "rgba(255,255,255,0.2)" : "#ddd";
-        const alertBg = isDarkMode
-          ? "rgba(255,255,255,0.05)"
-          : "rgba(0,0,0,0.03)";
-
-        Swal.fire({
-          title: "Trade Eggs",
-          background: bgColor,
-          color: textColor,
-          confirmButtonColor: "#ffb7ce",
-          confirmButtonText: "Trade",
-          showCancelButton: true,
-          cancelButtonText: "Close",
-          width: isDarkMode ? "400px" : "420px",
-          html: `
-            <div style="font-family: 'Fredoka', sans-serif; text-align: left;">
-              <div style="margin-bottom: 20px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--success); margin-bottom: 8px;">
-                  <i class="fas fa-arrow-up"></i> My Extra (Trading away)
-                </label>
-                <input type="text" id="extraEggs" placeholder="e.g. 1, 3, 5-10" 
-                  style="width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid ${inputBorder}; background: ${inputBg}; color: ${textColor}; font-family: 'Fredoka', sans-serif; font-size: 1rem; outline: none; box-sizing: border-box;"
-                  oninput="validateExtraEggs(this.value)">
-                <div id="extraAlert" style="margin-top: 8px; font-size: 0.8rem; min-height: 20px;"></div>
-              </div>
-              
-              <div style="margin-bottom: 20px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--danger); margin-bottom: 8px;">
-                  <i class="fas fa-arrow-down"></i> Want (Looking for)
-                </label>
-                <input type="text" id="needEggs" placeholder="e.g. 2, 4, 15-20"
-                  style="width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid ${inputBorder}; background: ${inputBg}; color: ${textColor}; font-family: 'Fredoka', sans-serif; font-size: 1rem; outline: none; box-sizing: border-box;"
-                  oninput="validateNeedEggs(this.value)">
-                <div id="needAlert" style="margin-top: 8px; font-size: 0.8rem; min-height: 20px;"></div>
-              </div>
-              
-              <div id="tradeSummary" style="background: ${alertBg}; padding: 15px; border-radius: 12px; text-align: center;">
-                <div style="font-size: 0.85rem; opacity: 0.8;">Enter egg numbers above</div>
-              </div>
-            </div>
-          `,
-          didRender: () => {
-            const style = document.createElement("style");
-            style.textContent = `
-              .swal2-popup { max-width: 90vw !important; }
-              input:focus { border-color: var(--primary) !important; }
-            `;
-            document.head.appendChild(style);
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const extraInput = document.getElementById("extraEggs").value;
-            const needInput = document.getElementById("needEggs").value;
-            copyTradeFromModal(extraInput, needInput);
-          }
-        });
-      }
-
-      function validateExtraEggs(value) {
-        const alertDiv = document.getElementById("extraAlert");
-        const summaryDiv = document.getElementById("tradeSummary");
-        if (!value.trim()) {
-          alertDiv.innerHTML = "";
-          updateTradeSummary();
-          return;
-        }
-
-        const nums = parseEggNumbers(value);
-        let errors = [];
-        let valid = [];
-
-        nums.forEach((num) => {
-          const result = validateEggNumber(num, "extra");
-          if (result.valid) {
-            valid.push(num);
-          } else {
-            errors.push(result.message);
-          }
-        });
-
-        if (errors.length > 0) {
-          alertDiv.innerHTML = `<span style="color: var(--danger);"><i class="fas fa-exclamation-circle"></i> ${errors[0]}</span>`;
-        } else if (valid.length > 0) {
-          alertDiv.innerHTML = `<span style="color: var(--success);"><i class="fas fa-check-circle"></i> ${valid.length} valid extra egg(s)</span>`;
-        }
-        updateTradeSummary();
-      }
-
-      function validateNeedEggs(value) {
-        const alertDiv = document.getElementById("needAlert");
-        if (!value.trim()) {
-          alertDiv.innerHTML = "";
-          updateTradeSummary();
-          return;
-        }
-
-        const nums = parseEggNumbers(value);
-        let errors = [];
-        let valid = [];
-
-        nums.forEach((num) => {
-          const result = validateEggNumber(num, "need");
-          if (result.valid) {
-            valid.push(num);
-          } else {
-            errors.push(result.message);
-          }
-        });
-
-        if (errors.length > 0) {
-          alertDiv.innerHTML = `<span style="color: var(--danger);"><i class="fas fa-exclamation-circle"></i> ${errors[0]}</span>`;
-        } else if (valid.length > 0) {
-          alertDiv.innerHTML = `<span style="color: var(--success);"><i class="fas fa-check-circle"></i> ${valid.length} valid wanted egg(s)</span>`;
-        }
-        updateTradeSummary();
-      }
-
-      function parseEggNumbers(input) {
-        const nums = [];
-        const parts = input.split(",");
-        parts.forEach((part) => {
-          part = part.trim();
-          if (part.includes("-")) {
-            const [start, end] = part.split("-").map((n) => parseInt(n.trim()));
-            if (!isNaN(start) && !isNaN(end) && start <= end) {
-              for (let i = start; i <= end; i++) nums.push(i);
-            }
-          } else {
-            const num = parseInt(part);
-            if (!isNaN(num)) nums.push(num);
-          }
-        });
-        return nums;
-      }
-
-      function updateTradeSummary() {
-        const summaryDiv = document.getElementById("tradeSummary");
-        const extraInput = document.getElementById("extraEggs").value;
-        const needInput = document.getElementById("needEggs").value;
-
-        const extraNums = parseEggNumbers(extraInput).filter(
-          (num) => validateEggNumber(num, "extra").valid,
-        );
-        const needNums = parseEggNumbers(needInput).filter(
-          (num) => validateEggNumber(num, "need").valid,
-        );
-
-        const formatRange = (nums) => {
-          if (nums.length === 0) return "";
-          nums.sort((a, b) => a - b);
-          let result = [],
-            start = nums[0],
-            end = nums[0];
-          for (let i = 1; i <= nums.length; i++) {
-            if (i < nums.length && nums[i] === end + 1) end = nums[i];
-            else {
-              result.push(start === end ? start : `${start}-${end}`);
-              if (i < nums.length) start = end = nums[i];
-            }
-          }
-          return result.join(",");
-        };
-
-        const bgColor = isDarkMode
-          ? "rgba(255,255,255,0.05)"
-          : "rgba(0,0,0,0.03)";
-
-        if (extraNums.length === 0 && needNums.length === 0) {
-          summaryDiv.innerHTML = `<div style="font-size: 0.85rem; opacity: 0.8;">Enter egg numbers above</div>`;
-        } else {
-          let html = `<div style="background: ${bgColor}; padding: 12px; border-radius: 10px;">`;
-          if (extraNums.length > 0) {
-            html += `<div style="margin-bottom: 8px;"><span style="color: var(--success); font-weight: 600;">Extra:</span> #${formatRange(extraNums)}</div>`;
-          }
-          if (needNums.length > 0) {
-            html += `<div><span style="color: var(--danger); font-weight: 600;">Need:</span> #${formatRange(needNums)}</div>`;
-          }
-          html += `</div>`;
-          summaryDiv.innerHTML = html;
-        }
-      }
-
-      function copyTradeFromModal(extraInput, needInput) {
-        const extraNums = parseEggNumbers(extraInput).filter(
-          (num) => validateEggNumber(num, "extra").valid,
-        );
-        const needNums = parseEggNumbers(needInput).filter(
-          (num) => validateEggNumber(num, "need").valid,
-        );
-
-        const formatRange = (nums) => {
-          if (nums.length === 0) return "";
-          nums.sort((a, b) => a - b);
-          let result = [],
-            start = nums[0],
-            end = nums[0];
-          for (let i = 1; i <= nums.length; i++) {
-            if (i < nums.length && nums[i] === end + 1) end = nums[i];
-            else {
-              result.push(start === end ? start : `${start}-${end}`);
-              if (i < nums.length) start = end = nums[i];
-            }
-          }
-          return result.join(",");
-        };
-
-        let parts = [];
-        if (extraNums.length > 0)
-          parts.push(`Extra:#${formatRange(extraNums)}`);
-        if (needNums.length > 0) parts.push(`Need:#${formatRange(needNums)}`);
-
-        const textToCopy = parts.join(" ");
-
-        if (!textToCopy) {
-          Swal.fire({
-            title: "No Valid Eggs",
-            text: "Please enter valid egg numbers to trade.",
-            icon: "warning",
-            background: isDarkMode ? "var(--card)" : "#ffffff",
-            color: isDarkMode ? "var(--text)" : "#2d3436",
-            confirmButtonColor: "#ffb7ce",
-          });
-          return;
-        }
-
-        // Update inventory: deduct extras, add needs
-        extraNums.forEach((eggId) => {
-          eggData[eggId] = Math.max(0, eggData[eggId] - 1);
-        });
-        needNums.forEach((eggId) => {
-          eggData[eggId] = (eggData[eggId] || 0) + 1;
-        });
-
-        localStorage.setItem("eggInventory", JSON.stringify(eggData));
-        render();
-
-        navigator.clipboard.writeText(textToCopy);
-        saveTradeLog(extraNums, needNums);
-
-        Swal.fire({
-          title: "Trade Complete!",
-          text: `Gave ${extraNums.length} egg(s), received ${needNums.length} egg(s)`,
-          toast: true,
-          position: "top-end",
-          timer: 2500,
-          showConfirmButton: false,
-          icon: "success",
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-          color: isDarkMode ? "var(--text)" : "#2d3436",
-        });
-      }
-
-      let tradeLogs = JSON.parse(localStorage.getItem("tradeLogs")) || [];
-
-      function saveTradeLog(extras, needs) {
-        const log = {
-          id: Date.now(),
-          date: new Date().toLocaleString(),
-          extras: [...extras],
-          needs: [...needs],
-          status: "active",
-        };
-        tradeLogs.unshift(log);
-        if (tradeLogs.length > 50) tradeLogs = tradeLogs.slice(0, 50);
-        localStorage.setItem("tradeLogs", JSON.stringify(tradeLogs));
-      }
-
-      function openTradeLogs() {
-        const bgColor = isDarkMode ? "var(--card)" : "#ffffff";
-        const textColor = isDarkMode ? "var(--text)" : "#2d3436";
-        const itemBg = isDarkMode
-          ? "rgba(255,255,255,0.05)"
-          : "rgba(0,0,0,0.03)";
-        const borderColor = isDarkMode
-          ? "rgba(255,255,255,0.1)"
-          : "rgba(0,0,0,0.1)";
-
-        let logsHtml = "";
-
-        if (tradeLogs.length === 0) {
-          logsHtml = `
-            <div style="text-align: center; padding: 40px 20px; opacity: 0.7;">
-              <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
-              <p style="margin: 0;">No trade history yet</p>
-              <p style="font-size: 0.85rem; margin-top: 5px;">Your completed trades will appear here</p>
-            </div>
-          `;
-        } else {
-          logsHtml = `
-            <div style="background: ${itemBg}; border: 1px solid ${borderColor}; border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
-              <p style="margin: 0; font-size: 0.8rem; opacity: 0.8; color: var(--text);">
-                <i class="fas fa-info-circle"></i> Here you can see all your traded eggs. Use <strong>Recover</strong> to undo a trade and restore your inventory.
-              </p>
-            </div>
-          `;
-          tradeLogs.forEach((log, index) => {
-            const formatRange = (nums) => {
-              if (nums.length === 0) return "-";
-              nums.sort((a, b) => a - b);
-              let result = [],
-                start = nums[0],
-                end = nums[0];
-              for (let i = 1; i <= nums.length; i++) {
-                if (i < nums.length && nums[i] === end + 1) end = nums[i];
-                else {
-                  result.push(start === end ? start : `${start}-${end}`);
-                  if (i < nums.length) start = end = nums[i];
+            
+            let loaded = 0;
+            const total = assets.length;
+            
+            function updateProgress() {
+                const percent = Math.round((loaded / total) * 100);
+                bar.style.width = percent + '%';
+                text.textContent = `Loading assets... ${percent}%`;
+                
+                if (loaded >= total) {
+                    setTimeout(() => {
+                        preloader.classList.add('hidden');
+                        setTimeout(() => preloader.remove(), 500);
+                    }, 300);
                 }
-              }
-              return result.join(",");
-            };
-
-            logsHtml += `
-              <div style="background: ${itemBg}; border: 1px solid ${borderColor}; border-radius: 12px; padding: 15px; margin-bottom: 12px;" id="log-${log.id}">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                  <span style="font-size: 0.75rem; opacity: 0.6;">${log.date}</span>
-                  <div style="display: flex; gap: 8px;">
-                    <button onclick="recoverTrade(${index})" style="background: var(--success); border: none; color: white; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Fredoka', sans-serif;">
-                      <i class="fas fa-undo"></i> Recover
-                    </button>
-                    <button onclick="removeTrade(${index})" style="background: var(--danger); border: none; color: white; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Fredoka', sans-serif;">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                  <div>
-                    <span style="color: var(--success); font-weight: 600; font-size: 0.8rem;"><i class="fas fa-arrow-up"></i> My Extra</span>
-                    <div style="font-size: 0.9rem; margin-top: 5px;">#${formatRange(log.extras)}</div>
-                  </div>
-                  <div>
-                    <span style="color: var(--danger); font-weight: 600; font-size: 0.8rem;"><i class="fas fa-arrow-down"></i> Want</span>
-                    <div style="font-size: 0.9rem; margin-top: 5px;">#${formatRange(log.needs)}</div>
-                  </div>
-                </div>
-              </div>
-            `;
-          });
-        }
-
-        Swal.fire({
-          title: "Trade Logs",
-          background: bgColor,
-          color: textColor,
-          confirmButtonColor: "#ffb7ce",
-          confirmButtonText: "Close",
-          width: "500px",
-          html: `
-            <div style="max-height: 500px; overflow-y: auto; padding-right: 5px;" class="custom-scroll">
-              ${logsHtml}
-            </div>
-          `,
+            }
+            
+            assets.forEach(src => {
+                const img = new Image();
+                img.onload = function() {
+                    loaded++;
+                    updateProgress();
+                };
+                img.onerror = function() {
+                    loaded++;
+                    updateProgress();
+                };
+                img.src = src;
+            });
+            
+            setTimeout(() => {
+                if (!preloader.classList.contains('hidden')) {
+                    preloader.classList.add('hidden');
+                    setTimeout(() => preloader.remove(), 500);
+                }
+            }, 10000);
         });
-      }
-
-      function recoverTrade(index) {
-        const log = tradeLogs[index];
-        if (!log) return;
-
-        // Add extras back to inventory
-        log.extras.forEach((eggId) => {
-          eggData[eggId] = (eggData[eggId] || 0) + 1;
-        });
-
-        // Remove needed eggs from inventory (traded away)
-        log.needs.forEach((eggId) => {
-          eggData[eggId] = Math.max(0, (eggData[eggId] || 0) - 1);
-        });
-
-        localStorage.setItem("eggInventory", JSON.stringify(eggData));
-        render();
-
-        Swal.fire({
-          title: "Trade Recovered!",
-          text: `Recovered extras and removed traded needs from inventory.`,
-          icon: "success",
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-          color: isDarkMode ? "var(--text)" : "#2d3436",
-          confirmButtonColor: "#ffb7ce",
-        });
-
-        // Remove this trade from history
-        tradeLogs.splice(index, 1);
-        localStorage.setItem("tradeLogs", JSON.stringify(tradeLogs));
-
-        // Reopen trade logs
-        setTimeout(() => openTradeLogs(), 500);
-      }
-
-      function removeTrade(index) {
-        Swal.fire({
-          title: "Delete Trade Log?",
-          text: "This action cannot be undone.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "var(--danger)",
-          cancelButtonColor: "#b2e2f2",
-          confirmButtonText: "Delete",
-          cancelButtonText: "Cancel",
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-          color: isDarkMode ? "var(--text)" : "#2d3436",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            tradeLogs.splice(index, 1);
-            localStorage.setItem("tradeLogs", JSON.stringify(tradeLogs));
-            openTradeLogs();
-          }
-        });
-      }
-
-      async function openAssistant() {
-        Swal.fire({
-          title: "EggDex Guide & Privacy",
-
-          icon: "info",
-
-          customClass: {
-            popup: isDarkMode ? "dark-mode" : "",
-          },
-
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-
-          color: "var(--text)",
-
-          confirmButtonColor: "#ffb7ce",
-
-          confirmButtonText: "Got it!",
-
-          width: "500px",
-
-          html: `
-
-      <div style="text-align: left; font-size: 0.9rem; line-height: 1.6; color: var(--text);">
-
-        <div style="text-align: center; margin-bottom: 20px;">
-
-          <h3 style="margin: 0; color: var(--primary); font-family: 'Fredoka', sans-serif;">Happy Easter my fellow Graalians! 🐰</h3>
-
-          <div style="margin-top: 10px;">
-
-            <img src="./assets/img/serxe_easter_icon.png" alt="Serxe" style="width: 60px; height: auto; display: inline-block;">
-
-          </div>
-
-        </div>
-
-
-
-        <p><strong style="color: var(--text);">Tracking all 100 eggs for the Graal Online Classic Easter Hunt 2026!</strong></p>
-
         
-
-        <p style="margin-top: 20px; color: var(--primary); font-weight: bold;">
-
-          <i class="fas fa-question-circle"></i> How To Use
-
-        </p>
-
-        <ul style="padding-left: 20px; margin-top: 5px; color: var(--text);">
-
-          <li>Use <strong style="color:var(--success)">+</strong> and <strong style="color:var(--danger)">-</strong> to manage your egg counts.</li>
-
-          <li><strong><i class="fas fa-copy"></i> Copy List:</strong> Generates a compact text for <b>Graal Game Chat</b>.</li>
-
-          <li>Tap the bottom <i class="fas fa-map-marker-alt"></i> icon to see <strong>Egg Locations</strong>.</li>
-
-        </ul>
-
-
-
-        <p style="margin-top: 20px; color: var(--success); font-weight: bold;">
-
-          <i class="fas fa-shield-alt"></i> Your Data & Privacy
-
-        </p>
-
-        <p style="margin-top: 5px; padding-left: 5px; color: var(--text); opacity: 0.9;">
-
-          This app is 100% serverless. Your progress is stored locally in your <strong>browser memory</strong>.
-
-        </p>
-
-
-
-        <div style="background-color: rgba(255, 207, 150, 0.15); border-left: 4px solid var(--danger); padding: 10px; margin-top: 15px; border-radius: 8px;">
-
-          <p style="margin: 0; color: var(--text);"><strong style="color: var(--danger);">IMPORTANT:</strong> Clearing browser cache will <b>reset progress</b>.</p>
-
-        </div>
-
-        <div style="background-color: rgba(100, 181, 246, 0.12); border: 1px solid rgba(100, 181, 246, 0.3); padding: 12px 15px; margin-top: 15px; border-radius: 10px;">
-
-          <p style="margin: 0 0 8px 0; color: var(--text); font-size: 0.85rem;">
-
-            <strong style="color: #64b5f6;"><i class="fas fa-chart-line"></i> Analytics & Privacy</strong>
-
-          </p>
-
-          <p style="margin: 0; color: var(--text); opacity: 0.9; font-size: 0.85rem; line-height: 1.5;">
-
-            This website uses <strong>Google Analytics</strong> to track visitor statistics (such as page views and session counts) solely to understand how many people are using EggDex. <strong>No personal data is collected or stored.</strong> Your egg inventory and progress remain local to your browser only.
-
-          </p>
-
-        </div>
-
-
-
-        <hr style="border: 0; border-top: 1px solid var(--gray); opacity: 0.3; margin: 20px 0;">
-
-
-
-        <div style="background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px; font-size: 0.8rem; text-align: center;">
-
-            <p style="margin: 0; font-weight: bold; color: var(--primary);">Credits & Community</p>
-
-            <p style="margin: 5px 0 0 0; opacity: 0.8;">
-
-                All images are from <b>Graal Online Classic</b>. This website is intended to help and support the Graal Classic community.
-
-            </p>
-
-        </div>
-
+        VANTA.NET({
+            el: "#vanta-canvas",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            color: 0x81eb38,
+            backgroundColor: 0x141414,
+        });
         
-
-        <div style="text-align: center; font-size: 0.85rem; opacity: 0.8; color: var(--text); margin-top: 15px;">
-
-          <p style="margin: 0;"><i class="fas fa-code"></i> Developed by: <strong>Serxe</strong></p>
-
-        </div>
-
-      </div>`,
-        });
-      }
-
-      function showEggDetails(eggId) {
-        const locations = areaData.filter((area) => area.eggs.includes(eggId));
-
-        const hue = (eggId * 137.5) % 360;
-
-        let locationHtml =
-          locations
-
-            .map(
-              (loc) => `
-
-
-
-      <div style="display: flex; align-items: center; gap: 12px; background: ${isDarkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)"}; padding: 12px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(0,0,0,0.05);">
-
-
-
-          <img src="${loc.img}" style="width: 70px; height: 50px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-
-
-
-          <div style="text-align: left;">
-
-
-
-              <div style="font-weight: 700; font-size: 0.9rem; color: var(--text);">${loc.name}</div>
-
-
-
-              <div style="font-size: 0.75rem; opacity: 0.8; color: var(--text); line-height: 1.3; margin-top: 2px;">${loc.desc}</div>
-
-
-
-          </div>
-
-
-
-      </div>`,
-            )
-
-            .join("") ||
-          `<p style="opacity: 0.6; padding: 20px;">No specific location data found for this egg.</p>`;
-
-        Swal.fire({
-          title: `Egg Details #${eggId}`,
-
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-
-          color: "var(--text)",
-
-          confirmButtonColor: "var(--primary)",
-
-          confirmButtonText: "Close Guide",
-
-          borderRadius: "24px",
-
-          showCloseButton: true,
-
-          html: `
-
-
-
-        <div style="padding-top: 10px;">
-
-
-
-          <div style="background: var(--accent); width: 100px; height: 100px; margin: 0 auto 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-
-
-
-            <div class="egg-icon" style="--hue: ${hue}deg; font-size: 60px;">🥚</div>
-
-
-
-          </div>
-
-
-
-          <div style="font-weight: 700; margin: 20px 0 12px; color: var(--text); text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
-
-
-
-            <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i> Where to Find
-          </div>
-          <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;" class="custom-scroll">
-            ${locationHtml}
-          </div>
-        </div>`,
-        });
-      }
-
-      async function openSettings() {
-        const res = await Swal.fire({
-          title: "Settings",
-
-          showDenyButton: true,
-
-          showCancelButton: true,
-
-          confirmButtonText: "Check All",
-
-          denyButtonText: "Reset All",
-
-          cancelButtonText: "Close",
-
-          confirmButtonColor: "#b2e2f2",
-
-          denyButtonColor: "#ffcf96",
-
-          customClass: {
-            popup: isDarkMode ? "dark-mode" : "",
-          },
-
-          background: isDarkMode ? "var(--card)" : "#ffffff",
-
-          color: "var(--text)",
-        });
-
-        if (res.isConfirmed) {
-          const confirmCheck = await Swal.fire({
-            title: "Are you sure?",
-
-            text: "This will mark all 100 eggs as collected!",
-
-            icon: "warning",
-
-            showCancelButton: true,
-
-            confirmButtonColor: "#b2e2f2",
-
-            confirmButtonText: "Yes, check all",
-          });
-
-          if (confirmCheck.isConfirmed) {
-            for (let i = 1; i <= totalUniqueEggs; i++) eggData[i] = 1;
-
-            render();
-
-            Swal.fire("Updated!", "All eggs marked as collected.", "success");
-          }
-        } else if (res.isDenied) {
-          const confirmReset = await Swal.fire({
-            title: "Reset All Progress?",
-
-            text: "You will lose all your tracked eggs. This cannot be undone!",
-
-            icon: "warning",
-
-            showCancelButton: true,
-
-            confirmButtonColor: "#ff7675",
-
-            cancelButtonColor: "#b2e2f2",
-
-            confirmButtonText: "Yes, reset everything!",
-
-            customClass: {
-              popup: isDarkMode ? "dark-mode" : "",
-            },
-          });
-
-          if (confirmReset.isConfirmed) {
-            for (let i = 1; i <= totalUniqueEggs; i++) eggData[i] = 0;
-
-            hasCelebrated = false;
-
-            render();
-
-            Swal.fire("Reset!", "Your inventory has been cleared.", "success");
-          }
-        }
-      }
-
-      // Preload assets function
-      async function preloadAssets() {
-        const assets = [
-          "./assets/img/serxe_easter_icon.png",
-          "./assets/img/user_profile.png",
-          "./assets/img/location_icon.png",
-          "./assets/img/egg_icon.png",
-          "./assets/img/spawn.jpg",
-          "./assets/img/pots.jpg",
-          "./assets/img/bush.jpg",
-          "./assets/img/bigcitybush.jpg",
-          "./assets/img/bigcity.jpg",
-          "./assets/img/railwaydig.jpg",
-          "./assets/img/destinydig.jpg",
-          "./assets/img/eastergrovedig.jpg",
-          "./assets/img/dig.jpg",
-          "./assets/img/blob.jpg",
-          "./assets/img/bandit.jpg",
-          "./assets/img/spider.jpg",
-          "./assets/img/lizardon.jpg",
-          "./assets/img/archer.jpg",
-        ];
-
-        const progressBar = document.getElementById("loadingProgressBar");
-        const percentText = document.getElementById("loadingPercent");
-        const overlay = document.getElementById("loadingOverlay");
-
-        let loaded = 0;
-        const total = assets.length;
-
-        for (const src of assets) {
-          await new Promise((resolve) => {
-            const img = new Image();
-            img.onload = resolve;
-            img.onerror = resolve;
-            img.src = src;
-          });
-
-          loaded++;
-          const percent = Math.round((loaded / total) * 100);
-          progressBar.style.width = percent + "%";
-          percentText.textContent = percent + "%";
-        }
-
-        // Fade out and hide overlay
-        overlay.style.opacity = "0";
-        setTimeout(() => {
-          overlay.style.display = "none";
-        }, 500);
-      }
-
-      checkFirstTime();
-      render();
-      preloadAssets();
+        window.copyModalFilename = function() {
+            const filename = document.getElementById('modalFilename').textContent;
+            navigator.clipboard.writeText(filename)
+                .catch(err => console.error(err));
+        };
     </script>
-  </body>
+    <script>
+        function protectImages() {
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('dragstart', e => e.preventDefault());
+                img.addEventListener('contextmenu', e => e.preventDefault());
+            });
+        }
+        protectImages();
+        const observer = new MutationObserver(protectImages);
+        observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') e.preventDefault();
+            if (e.metaKey && e.altKey && e.key === 'I') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'J') e.preventDefault();
+            if (e.metaKey && e.altKey && e.key === 'J') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') e.preventDefault();
+            if (e.ctrlKey && e.key === 'u') e.preventDefault();
+            if (e.metaKey && e.key === 'u') e.preventDefault();
+        });
+        
+        (function() {
+            const devtools = () => { console.log('DevTools detected'); };
+            setInterval(devtools, 1000);
+        })();
+        
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorRing = document.querySelector('.custom-cursor-ring');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        const clickables = document.querySelectorAll('a, button, .art-card, .tool-card, input, [role="button"]');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorRing.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorRing.classList.remove('hover');
+            });
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicking');
+            cursorRing.classList.add('clicking');
+        });
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicking');
+            cursorRing.classList.remove('clicking');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+            cursorRing.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+            cursorRing.style.opacity = '1';
+        });
+    </script>
+</body>
 </html>
