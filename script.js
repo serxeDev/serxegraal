@@ -125,9 +125,9 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             name: "EggDex",
             type: "Tracker",
-            description: "Track and catalog all the eggs you've collected in Graal Classic.",
+            description: "Track all the eggs you've collected in Graal Online Classic.",
             logo: "./assets/img/tool_eggdex.png",
-            link: "https://serxeweb.github.io/eggdex/"
+            link: "https://eggdex.vercel.app/"
         }
     ];
 
